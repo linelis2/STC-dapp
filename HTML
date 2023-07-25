@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+  <!-- Top navbar -->
+  <nav>
+    <div class="navbar-brand">
+      <img src="logo.svg"/> 
+      STC DApp
+    </div>
+    <div class="nav-items">
+      <button class="connect-wallet">Connect</button>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main>
+    <!-- User's Balance -->
+    <div class="balance-card">
+      <h3>Your Balance</h3>
+      <h1><span class="balance-amount">0</span> <span class="balance-symbol">STC</span></h1>
+      <p class="usd-value">$0.00</p>
+      <div class="actions">
+        <button class="send-btn">Send</button>
+        <button class="receive-btn">Receive</button>
+      </div>
+    </div>
+
+    <!-- Locked Tokens -->
+    <div class="lock-card">
+      <h3>Locked Balance</h3>
+      <h1><span class="locked-amount">0</span> <span class="balance-symbol">STC</span></h1>
+      <div class="unlock-date">Unlocks on <span class="unlock-date-str"></span></div>
+      <div class="actions">
+        <button class="lock-btn">Lock</button>
+        <button class="unlock-btn">Unlock</button>
+      </div>
+    </div>
+
+    <!-- Transaction History -->
+    <div class="tx-card">
+      <h3>Recent Transactions</h3>
+      <table>
+        <tr>
+          <th>Amount</th>
+          <th>Date</th>
+        </tr>
+        <!-- Transaction rows populated here -->
+      </table>
+    </div>
+
+    <!-- Notifications -->
+    <div class="notification success">
+      <p>Tokens sent successfully!</p>
+    </div>
+    <div class="notification error">
+      <p>Transaction failed!</p>
+    </div>
+
+    <!-- DAO Section -->
+    <section id="dao">
+      <!-- User's DAO Roles -->
+      <div id="user-roles">
+        <h3>My DAO Roles</h3>
+        <div class="roles">
+          <div class="role">Voter</div>
+        </div>
+      </div>
+
+      <!-- Proposals -->
+      <div id="proposals">
+        <h2>Active Proposals</h2>
+        <!-- Proposal -->
+        <div class="proposal">
+          <h3 class="proposal-title"></h3>
+          <p class="proposal-desc"></p>
+          <footer>
+            <div class="votes">
+              <span class="votes-for"></span>
+              <span class="votes-against"></span> 
+            </div>
+            <div class="proposal-status">
+              Status: <span class="proposal-status-text"></span>
+            </div>
+            <button class="vote-btn">Vote</button>
+          </footer>
+        </div>
+      </div>
+
+      <!-- New Proposal Form -->
+      <div id="new-proposal">
+        <h3>Create New Proposal</h3>
+        <form>
+          <input type="text" name="title" placeholder="Title" />
+          <textarea name="description" placeholder="Description..."></textarea>
+          <button type="submit">Submit Proposal</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modals -->
+  <div class="modal send-modal">
+    <!-- Send tokens popup -->
+  </div>
+  <div class="modal lock-modal">
+    <!-- Lock tokens popup -->  
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
