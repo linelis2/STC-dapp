@@ -1,0 +1,115 @@
+// Web3 and Contracts
+const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+const stcContract = new ethers.Contract(stcAddress, stcAbi, signer);
+const daoContract = new ethers.Contract(daoAddress, daoAbi, signer);
+
+// State
+const state = {
+  user: null,
+  balance: null,
+  lockedBalance: null,
+  proposals: [],
+};
+
+// Cached DOM elements
+const balanceEl = document.querySelector(".balance-amount");
+const lockedEl = document.querySelector(".locked-amount");
+const proposalsEl = document.querySelector("#proposals");
+
+// Connect wallet
+const connectWallet = async () => {
+  try {
+    const accounts = await provider.listAccounts();
+    state.user = accounts[0];
+
+    await init();
+  } catch (error) {
+    showNotification("Error connecting wallet.");
+  }
+};
+
+// Initialize state
+const init = async () => {
+  try {
+    state.balance = await stcContract.balanceOf(state.user);
+    state.lockedBalance = await lockContract.lockedBalanceOf(state.user);
+    state.proposals = await getProposals();
+
+    updateUI();
+  } catch (error) {
+    showNotification("Error initializing.");
+  }
+};
+
+// Render state to UI
+const updateUI = () => {
+  balanceEl.innerText = state.balance;
+  lockedEl.innerText = state.lockedBalance;
+  renderProposals();
+};
+
+// Get DAO proposals
+const getProposals = async () => {
+  try {
+    const proposalCount = await daoContract.proposalCount();
+    let proposals = [];
+
+    for (let i = 1; i <= proposalCount; i++) {
+      let proposal = await daoContract.proposals(i);
+      proposals.push(proposal);
+    }
+
+    return proposals;
+  } catch (error) {
+    showNotification("Error fetching proposals.");
+    return [];
+  }
+};
+
+// Render proposals
+const renderProposals = () => {
+  proposalsEl.innerHTML = "";
+
+  state.proposals.forEach((proposal) => {
+    const proposalEl = createProposalElement(proposal);
+    proposalsEl.appendChild(proposalEl);
+  });
+};
+
+// Listen for state changes
+daoContract.on("ProposalCreated", async () => {
+  state.proposals = await getProposals();
+  renderProposals();
+});
+
+// Show notifications
+function showNotification(message) {
+  const notification = document.createElement("div");
+  notification.innerHTML = message;
+
+  if (message.includes("success")) {
+    notification.classList.add("success");
+  } else {
+    notification.classList.add("error");
+  }
+
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    notification.remove();
+  }, 5000);
+}
+
+// New transaction handler
+stcContract.on("Transfer", async (from, to, amount, event) => {
+  if (from === state.user || to === state.user) {
+    try {
+      await init();
+      updateUI();
+      showNotification("Tokens transferred successfully!");
+    } catch (error) {
+      showNotification("Error updating balances after transfer.");
+    }
+  }
+});
